@@ -1,6 +1,6 @@
 import re
 
-class SimpleTokenizerV2:
+class SimpleTokenizer:
     def __init__(self,vocab):
         self.str_to_int = vocab
         self.int_to_str ={i:s for s,i in vocab.items()}
@@ -30,9 +30,10 @@ class SimpleTokenizerV2:
 with open("the-verdict.txt","r", encoding="utf-8") as f:
     raw_text =f.read()
 
-print("Total number of character:", len(raw_text))
+#print("Total number of character:", len(raw_text))
 #print (raw_text[:99])
 
+#spliting ...
 preprocessed = re.split(r'([,.?_!;:"()\']|--|\s)',raw_text)
 # Removing white space
 preprocessed =[item.strip() for item in preprocessed if item.strip()]
@@ -40,7 +41,7 @@ preprocessed =[item.strip() for item in preprocessed if item.strip()]
 #print(len(preprocessed))
 
 
-#STEP 2: creating toketn IDs
+#STEP 2: creating token IDs
 all_tokens = sorted(list(set(preprocessed)))
 all_tokens.extend(["<|endoftext|>","<|unk|>"])
 vocab_size=len(all_tokens)
@@ -52,15 +53,14 @@ for i,item in enumerate(list(vocab.items())[-5:]):
                     
 
 
-# STEP 3 : encode / decode in SimpleTokenzerV2 class;
-tokenizer = SimpleTokenizerV2(vocab)
+# STEP 3 : encode / decode in SimpleTokenzer class;
+tokenizer = SimpleTokenizer(vocab)
 
-# Example
+# Few more example 
 text1= "Hello, do you like tea?"
 text2= "In the sunlit terraces of the palace."
 text =" <|endoftext|> ".join((text1,text2))
 print(text)
 ids = tokenizer.encode(text)
 print(ids)
-
 print(tokenizer.decode(ids))
