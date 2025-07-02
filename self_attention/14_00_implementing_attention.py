@@ -47,17 +47,15 @@ query = inputs[1] #2nd input
 attn_scores_2 =torch.empty(inputs.shape[0])
 for i,x_i in enumerate(inputs):
     attn_scores_2[i]= torch.dot(x_i,query) # dot product
-
 print (attn_scores_2)
+
+# ATTENTION WEIGHT Naive
 attn_weights_2_temp =    attn_scores_2 /  attn_scores_2.sum()
 print  ("Attention weights :" ,attn_weights_2_temp)
 print ("Sum :",attn_weights_2_temp.sum())
 print(attn_weights_2_temp.norm())
-
-# ATTENTION WEIGHT Naive
 def softmax_naive(x):
     return torch.exp(x) / torch.exp(x).sum(dim=0)
-
 attn_weights_2_naive = softmax_naive(attn_scores_2)
 
 print("Attention weights:",attn_weights_2_naive)
