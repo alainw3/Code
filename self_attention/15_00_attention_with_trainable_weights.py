@@ -42,3 +42,10 @@ attn_score_2 = query_2 @ keys.T  # Attention scores between x2 and all keys
 print("Attention scores between x2 and all keys:", attn_score_2)
 attn_score = queries @ keys.T  # Attention scores between all queries and keys
 print("Attention scores between all queries and keys:", attn_score)
+d_k = keys.shape[1]  # Dimension of key vectors 
+attn_score = attn_score / (d_k ** 0.5)  # Scale attention scores
+print("Scaled attention scores:", attn_score)
+attn_weights = torch.softmax(attn_score, dim=-1)  # Normalized attention weights
+print("Attention weights:", attn_weights)
+context = attn_weights @ values  # Context vectors
+print("Context vectors:", context)
