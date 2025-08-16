@@ -37,6 +37,16 @@ class CausalAttention(nn.Module):
         context = attn_weights @ values
         return context
 
+class MultiHeadAttentionWrapper(nn.Module):
+    def __init__(self, d_in, d_out, context_length, dropout , num_heads, qkv_bias= False):
+        super().__init__()
+        self.heads = nn.ModuleList(
+            [CausalAttention( d_in, d_out, context_length, dropout , qkv_bias)
+             for _ in range(num_heads)]
+        )
+    def forward(self, x):
+        return torch.cat([head(x) for head in self.heads], dim=-1)
+
 
 
 inputs = torch.tensor([[0.43,0.15,0.89], # Your x1
@@ -56,11 +66,11 @@ d_in = inputs.shape[1]  # Dimension of input vectors
 d_out = 2  # Dimension of output vectors
 torch.manual_seed(123)
 
-casual_attention = CausalAttention(d_in,d_out,context_length,0.0)
-context_vector = casual_attention(batch)
+num_heads =2 
+multiHeadAttentionWrapper = MultiHeadAttentionWrapper(d_in,d_out,context_length,0.0,num_heads)
+context_vector = multiHeadAttentionWrapper(batch)
 print("Context vectors:",context_vector)
 print(context_vector.shape)
-
 
 
 
