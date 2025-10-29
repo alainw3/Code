@@ -6,11 +6,7 @@ import torch
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_in, d_out, context_length, dropout, num_heads, qkv_bias=False):
         super().__init__()
-<<<<<<< HEAD
         assert (d_out % num_heads == 0), \
-=======
-        assert ( d_out % num_heads ==0),\
->>>>>>> 91279811e6e9fdf465f0bd23bda83864d26afa38
             "d_out must be divisible by num_heads"
 
         self.d_out = d_out
@@ -46,7 +42,6 @@ class MultiHeadAttention(nn.Module):
         queries = queries.transpose(1, 2)
         values = values.transpose(1, 2)
 
-<<<<<<< HEAD
         # Compute scaled dot-product attention (aka self-attention) with a causal mask
         attn_scores = queries @ keys.transpose(2, 3)  # Dot product for each head
 
@@ -65,32 +60,6 @@ class MultiHeadAttention(nn.Module):
         # Combine heads, where self.d_out = self.num_heads * self.head_dim
         context_vec = context_vec.contiguous().view(b, num_tokens, self.d_out)
         context_vec = self.out_proj(context_vec) # optional projection
-=======
-        #Attention score 
-        attn_score = queries @ keys.transpose(2,3)
-   
-        #Origial mask trunckated to the number of tho tokens and converted to boolean
-        mask_bool =  self.mask.bool()[:num_tokens,:num_tokens]
-
-        #use the mask to fill attenion scores
-        attn_score = attn_score.masked_fill(mask_bool,-torch.inf)
-            
-      
-
-        d_k = keys.shape[-1]
-        masked = masked / (d_k ** 0.5)
-        attn_weights = torch.softmax(masked, dim=-1)
-        attn_weights = self.dropout(attn_weights)
-        
-
-        #Shape : (b, num_tokens, num_heads, head_dim)
-        context = (attn_weights @ values).transpose(1,2)
-
-        context = context.contiguous().view(b,num_tokens, self.d_out)
-        context = self.out_proj(context) # optional projection
-
-        return context
->>>>>>> 91279811e6e9fdf465f0bd23bda83864d26afa38
 
         return context_vec
 
@@ -109,14 +78,9 @@ batch_size, context_length, d_in = batch.shape
 d_out = 6  # Dimension of output vectors
 
 num_heads=2
-<<<<<<< HEAD
 #multiHeadAttentionWrapper = MultiHeadAttentionWrapper(d_in,d_out,context_length,0.0,num_heads) 
 mha  = MultiHeadAttention(d_in,d_out,context_length,0.0,num_heads)
 context_vector = mha(batch)
-=======
-multiHeadAttentionWrapper = MultiHeadAttentionWrapper(d_in,d_out,context_length,0.0,num_heads)
-context_vector = multiHeadAttentionWrapper(batch)
->>>>>>> 91279811e6e9fdf465f0bd23bda83864d26afa38
 print("Context vectors:",context_vector)
 print(context_vector.shape)
 
